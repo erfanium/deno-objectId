@@ -1,8 +1,3 @@
-import {
-  decodeString,
-  encodeToString,
-} from "https://deno.land/std@0.95.0/encoding/hex.ts";
-
 function randomBytes(size: number) {
   const bytes = new Uint8Array(size);
   crypto.getRandomValues(bytes);
@@ -12,7 +7,7 @@ function randomBytes(size: number) {
 const PROCESS_UNIQUE = randomBytes(5);
 let index = ~~(Math.random() * 0xffffff);
 
-export function oid(date = Date.now()): Uint8Array {
+export function objectId(date = Date.now()): Uint8Array {
   index = (index + 1) % 0xffffff;
   const objectId = new Uint8Array(12);
   const time = ~~(date / 1000);
@@ -35,12 +30,7 @@ export function oid(date = Date.now()): Uint8Array {
   return objectId;
 }
 
-export function oidHex(date?: number): string {
-  return encodeToString(oid(date));
-}
-
-export function getDate(oid: Uint8Array | string) {
-  if (typeof oid === "string") oid = decodeString(oid);
+export function getDate(oid: Uint8Array): Date {
   const date = new Date();
   const time = new DataView(oid.buffer, 0, 4).getUint32(0);
 
