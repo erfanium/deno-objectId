@@ -3,6 +3,7 @@
 Native bson objectId implementation in Deno, With ZERO dependencies
 
 ```ts
+import { objectId, getDate } from "https://deno.land/x/objectid@0.1.0/mod.ts";
 import { decodeString, encodeToString } from "https://deno.land/std@0.95.0/encoding/hex.ts";
 
 // Create ObjectId
