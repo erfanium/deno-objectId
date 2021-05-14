@@ -1,7 +1,17 @@
+import { decodeString as stdDecodeString } from "https://deno.land/std@0.95.0/encoding/hex.ts";
+
 function randomBytes(size: number) {
   const bytes = new Uint8Array(size);
   crypto.getRandomValues(bytes);
   return bytes;
+}
+
+export class InvalidObjectId extends Error {
+  constructor() {
+    super();
+    this.name = "InvalidObjectId";
+    this.message = "Invalid ObjectId length";
+  }
 }
 
 const PROCESS_UNIQUE = randomBytes(5);
@@ -30,10 +40,20 @@ export function objectId(date = Date.now()): Uint8Array {
   return objectId;
 }
 
+export function isValid(oid: Uint8Array): boolean {
+  return oid.length === 12;
+}
+
+export function decodeString(hex: string): Uint8Array {
+  const oid = stdDecodeString(hex);
+  if (!isValid(oid)) throw new InvalidObjectId();
+  return oid;
+}
+
 export function getDate(oid: Uint8Array): Date {
   const date = new Date();
   const time = new DataView(oid.buffer, 0, 4).getUint32(0);
 
-  date.setTime(Math.floor(time) * 1000);
+  date.setTime(~~(time) * 1000);
   return date;
 }
